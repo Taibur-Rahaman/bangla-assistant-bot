@@ -1,7 +1,4 @@
 python-telegram-bot
 ffmpeg-python
-openai-whisper
-torch
-torchaudio
+openai
 apscheduler
-
