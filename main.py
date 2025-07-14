@@ -6,8 +6,8 @@ from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filte
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-PORT = int(os.environ.get("PORT", "8080"))  # Railway uses PORT env var
-APP_URL = os.getenv("RAILWAY_PUBLIC_URL")   # Add this in Railway Variables
+PORT = int(os.environ.get("PORT", "8080"))
+APP_URL = os.getenv("RAILWAY_PUBLIC_URL")
 
 openai.api_key = OPENAI_API_KEY
 
@@ -27,18 +27,13 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = transcript["text"]
     await update.message.reply_text(f"আপনার বার্তা:\n{text}")
 
-async def main():
+# Instead of asyncio.run(), do this:
+if __name__ == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(MessageHandler(filters.VOICE, handle_voice))
 
-    # Set webhook
-    await app.bot.set_webhook(f"{APP_URL}/{BOT_TOKEN}")
-    await app.run_webhook(
+    app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
         webhook_url=f"{APP_URL}/{BOT_TOKEN}",
     )
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
